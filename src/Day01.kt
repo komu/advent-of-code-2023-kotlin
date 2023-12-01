@@ -1,5 +1,5 @@
 /** Returns a list of all possible tail substrings of a given string. */
-private fun String.tails() = indices.mapNotNull { subSequence(it, length) }
+private fun String.tails() = indices.map { subSequence(it, length) }
 
 /** Mapping from "0" -> 0, "1" -> 1 etc. */
 private val numericDigits = (0..9).associateBy { it.toString() }
