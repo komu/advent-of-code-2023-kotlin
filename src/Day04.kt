@@ -26,17 +26,14 @@ fun main() {
         input.sumOf { Card.parse(it).score }
 
     fun part2(input: List<String>): Int {
-        val cardsById = input.map { Card.parse(it) }.associateBy { it.id }
+        val cards = input.map { Card.parse(it) }
+        val counts = Array(cards.size) { 1 }
 
-        var total = 0
-        val stack = cardsById.keys.toMutableList()
+        for (card in cards.reversed())
+            for (copyId in card.copies)
+                counts[card.id - 1] += counts[copyId - 1]
 
-        while (stack.isNotEmpty()) {
-            stack += cardsById[stack.removeLast()]!!.copies
-            total += 1
-        }
-
-        return total
+        return counts.sum()
     }
 
     check(part1(readInput("Day04_test")) == 13)
