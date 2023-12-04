@@ -1,4 +1,4 @@
-private data class Card(val id: Int, val winningNumbers: List<Int>, val actualNumbers: List<Int>) {
+private class Card(val id: Int, winningNumbers: List<Int>, actualNumbers: List<Int>) {
 
     val matches = actualNumbers.count { it in winningNumbers }
     val score = if (matches == 0) 0 else 1 shl (matches - 1)
@@ -8,12 +8,14 @@ private data class Card(val id: Int, val winningNumbers: List<Int>, val actualNu
 
         private val PATTERN = Regex("""Card\s+(\d+): (.+) \| (.+)""")
         private val SPACE = Regex("""\s+""")
+
         fun parse(s: String): Card {
             val (id, winning, actual) = PATTERN.matchEntire(s)!!.destructured
+
             return Card(
                 id = id.toInt(),
-                winningNumbers = winning.trim().split(SPACE).map { it.trim().toInt() },
-                actualNumbers = actual.trim().split(SPACE).map { it.trim().toInt() }
+                winningNumbers = winning.trim().split(SPACE).map { it.toInt() },
+                actualNumbers = actual.trim().split(SPACE).map { it.toInt() }
             )
         }
     }
