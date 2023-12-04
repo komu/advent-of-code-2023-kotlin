@@ -29,10 +29,10 @@ fun main() {
         val cardsById = input.map { Card.parse(it) }.associateBy { it.id }
 
         var total = 0
-        val queue = cardsById.keys.toMutableList()
+        val stack = cardsById.keys.toMutableList()
 
-        while (queue.isNotEmpty()) {
-            queue += cardsById[queue.removeLast()]!!.copies
+        while (stack.isNotEmpty()) {
+            stack += cardsById[stack.removeLast()]!!.copies
             total += 1
         }
 
