@@ -1,6 +1,6 @@
 private class Card(val id: Int, winningNumbers: List<Int>, actualNumbers: List<Int>) {
 
-    val matches = actualNumbers.count { it in winningNumbers }
+    val matches = actualNumbers.intersect(winningNumbers).size
     val score = if (matches == 0) 0 else 1 shl (matches - 1)
     val copies = (1..matches).map { id + it }
 
