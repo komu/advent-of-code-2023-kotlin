@@ -26,6 +26,10 @@ fun Iterable<Int>.product(): Int =
 inline fun <T> Iterable<T>.productOf(block: (T) -> Int ): Int =
     fold(1) { a, b -> a * block(b) }
 
+private val SPACE = Regex("\\s+")
+
+fun String.words(): List<String> = split(SPACE)
+
 fun <T> assertEquals(a: T, b: T) {
     check(a == b) { "$a != $b" }
 }

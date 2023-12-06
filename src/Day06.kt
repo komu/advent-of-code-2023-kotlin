@@ -1,37 +1,27 @@
-private class Race(val time: Long, val distance: Long) {
-
-    fun wins(): Int =
-        (1..time).count { charge ->
-            charge * (time - charge) > distance
-        }
-
-    companion object {
-
-        val tests = listOf(
-            Race(7, 9),
-            Race(15, 40),
-            Race(30, 200),
-        )
-
-        val real = listOf<Race>() // replace with real data
+private fun wins(time: Long, distance: Long): Int =
+    (1..time).count { charge ->
+        charge * (time - charge) > distance
     }
-}
 
 fun main() {
-    fun part1(races: List<Race>) =
-        races.productOf { it.wins() }
+    fun part1(input: List<String>): Int {
+        val times = input[0].removePrefix("Time:").trim().words().map { it.toLong() }
+        val distances = input[1].removePrefix("Distance:").trim().words().map { it.toLong() }
 
-    fun part2(races: List<Race>): Int {
-        val race = Race(
-            time = races.joinToString("") { it.time.toString() }.toLong(),
-            distance = races.joinToString("") { it.distance.toString() }.toLong()
-        )
-        return race.wins()
+        return times.zip(distances).productOf { (time, distance) -> wins(time, distance) }
     }
 
-    check(part1(Race.tests) == 288)
-    check(part2(Race.tests) == 71503)
+    fun part2(input: List<String>): Int {
+        val time = input[0].removePrefix("Time:").trim().words().joinToString("").toLong()
+        val distance = input[1].removePrefix("Distance:").trim().words().joinToString("").toLong()
 
-    part1(Race.real).println()
-    part2(Race.real).println()
+        return wins(time, distance)
+    }
+
+    check(part1(readInput("Day06_test")) == 288)
+    check(part2(readInput("Day06_test")) == 71503)
+
+    val input = readInput("Day06")
+    part1(input).println()
+    part2(input).println()
 }
