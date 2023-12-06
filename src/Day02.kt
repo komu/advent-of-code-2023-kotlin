@@ -42,8 +42,6 @@ private class Game(val id: Int, val constraints: List<Constraint>) {
     }
 }
 
-private fun Iterable<Int>.product() = fold(1) { a, b -> a * b }
-
 fun main() {
     fun part1(input: List<String>): Int {
         val candidate = mapOf("red" to 12, "green" to 13, "blue" to 14)
