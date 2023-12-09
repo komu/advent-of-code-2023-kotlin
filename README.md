@@ -1,25 +1,10 @@
-# advent-of-code-2023-kotlin
+# Advent of Code 2023 in Kotlin
 
-Welcome to the Advent of Code[^aoc] Kotlin project created by [komu][github] using the [Advent of Code Kotlin Template][template] delivered by JetBrains.
+Solutions to Advent of Code 2023 in Kotlin 
 
-In this repository, komu is about to provide solutions for the puzzles using [Kotlin][kotlin] language.
+## Previously
 
-If you're stuck with Kotlin-specific questions or anything related to this template, check out the following resources:
-
-- [Kotlin docs][docs]
-- [Kotlin Slack][slack]
-- Template [issue tracker][issues]
-
-
-[^aoc]:
-    [Advent of Code][aoc] – An annual event of Christmas-oriented programming challenges started December 2015.
-    Every year since then, beginning on the first day of December, a programming puzzle is published every day for twenty-five days.
-    You can solve the puzzle and provide an answer using the language of your choice.
-
-[aoc]: https://adventofcode.com
-[docs]: https://kotlinlang.org/docs/home.html
-[github]: https://github.com/komu
-[issues]: https://github.com/kotlin-hands-on/advent-of-code-kotlin-template/issues
-[kotlin]: https://kotlinlang.org
-[slack]: https://surveys.jetbrains.com/s3/kotlin-slack-sign-up
-[template]: https://github.com/kotlin-hands-on/advent-of-code-kotlin-template
+* [2023 Polyglot](https://github.com/komu/advent-of-code-2023-polyglot)
+* [2022 in Rust](https://github.com/komu/advent-of-code-2022)
+* [2021 in Kotlin](https://github.com/komu/advent-of-code-2021)
+* [2015-2020 in Kotlin](https://github.com/komu/advent-of-code)

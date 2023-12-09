@@ -48,3 +48,6 @@ fun <T> Sequence<T>.repeated(): Sequence<T> = sequence {
         yieldAll(this@repeated)
     }
 }
+
+fun String.toIntList() = words().map { it.toInt() }
+
