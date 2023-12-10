@@ -43,14 +43,6 @@ private class Number(digits: String, x: Int, y: Int) {
     }
 }
 
-private data class Point(val x: Int, val y: Int) {
-
-    companion object {
-        fun inRange(xRange: IntRange, yRange: IntRange) =
-            yRange.flatMap { y -> xRange.map { x -> Point(x, y) } }
-    }
-}
-
 fun main() {
     fun part1(input: List<String>): Int {
         val schematic = Schematic(input)
