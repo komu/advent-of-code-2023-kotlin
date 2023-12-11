@@ -10,13 +10,10 @@ private class Universe(private val grid: List<String>) {
     }
 
     fun shortestPath(a: Point, b: Point, expansion: Long): Long {
-        val xs = minOf(a.x, b.x)..maxOf(a.x, b.x)
-        val ys = minOf(a.y, b.y)..maxOf(a.y, b.y)
+        val empty = (a.x..b.x).normalize().intersect(emptyCols).size +
+                (a.y..b.y).normalize().intersect(emptyRows).size
 
-        return (xs.last - xs.first) +
-                (ys.last - ys.first) +
-                xs.intersect(emptyCols).size * expansion +
-                ys.intersect(emptyRows).size * expansion
+        return a.manhattanDistance(b) + empty * (expansion - 1)
     }
 }
 
@@ -29,11 +26,11 @@ fun main() {
         }
     }
 
-    fun part1(input: List<String>) = solve(input, expansion = 1)
-    fun part2(input: List<String>) = solve(input, expansion = 999_999)
+    fun part1(input: List<String>) = solve(input, expansion = 2)
+    fun part2(input: List<String>) = solve(input, expansion = 1_000_000)
 
     check(part1(readInput("Day11_test")) == 374L)
-    check(solve(readInput("Day11_test"), expansion = 9) == 1030L)
+    check(solve(readInput("Day11_test"), expansion = 10) == 1030L)
 
     val input = readInput("Day11")
     part1(input).println()

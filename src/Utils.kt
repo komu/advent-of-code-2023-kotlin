@@ -2,6 +2,8 @@ import java.math.BigInteger
 import java.security.MessageDigest
 import kotlin.io.path.Path
 import kotlin.io.path.readLines
+import kotlin.math.abs
+import kotlin.math.absoluteValue
 
 /**
  * Reads lines from the given input txt file.
@@ -68,6 +70,9 @@ data class Point(val x: Int, val y: Int) {
     val right: Point
         get() = towards(CardinalDirection.E)
 
+    fun manhattanDistance(p: Point) =
+        abs(x - p.x) + abs(y - p.y)
+
     fun towards(d: CardinalDirection): Point =
         Point(x + d.dx, y + d.dy)
 
@@ -84,6 +89,11 @@ data class Point(val x: Int, val y: Int) {
             yRange.flatMap { y -> xRange.map { x -> Point(x, y) } }
     }
 }
+
+fun IntRange.normalize() =
+    minOf(start, endInclusive)..maxOf(start, endInclusive)
+
+fun <T> Iterable<T>.intersectionSize(xs: Iterable<T>) = intersect(xs).size
 
 enum class CardinalDirection(val dy: Int, val dx: Int) {
     N(-1, 0),
