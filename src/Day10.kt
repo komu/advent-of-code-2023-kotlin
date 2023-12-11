@@ -22,7 +22,10 @@ private class PipeGrid(private val lines: List<String>) {
         return CardinalDirection.entries.firstNotNullOf { findLoopAndPointsOnLeftOfLoop(start, it) }
     }
 
-    private fun findLoopAndPointsOnLeftOfLoop(start: Point, initialDirection: CardinalDirection): Pair<Set<Point>, MutableSet<Point>>? {
+    private fun findLoopAndPointsOnLeftOfLoop(
+        start: Point,
+        initialDirection: CardinalDirection
+    ): Pair<Set<Point>, MutableSet<Point>>? {
         val loop = mutableSetOf<Point>()
         val left = mutableSetOf<Point>()
 
@@ -77,17 +80,17 @@ private class PipeGrid(private val lines: List<String>) {
         return Pair(loop, left)
     }
 
-    fun floodFill(points: MutableSet<Point>, loop: Set<Point>) {
-        val queue = points.toMutableList()
-
-        while (queue.isNotEmpty())
-            for (n in queue.removeLast().neighbors)
-                if (inBounds(n) && n !in loop && points.add(n))
-                    queue.add(n)
-    }
-
     fun isOnBorder(p: Point) =
         p.neighbors.any { !inBounds(it) }
+}
+
+private inline fun MutableSet<Point>.floodFill(predicate: (Point) -> Boolean) {
+    val queue = toMutableList()
+
+    while (queue.isNotEmpty())
+        for (n in queue.removeLast().neighbors)
+            if (predicate(n) && add(n))
+                queue.add(n)
 }
 
 fun main() {
@@ -99,7 +102,7 @@ fun main() {
 
         val (loop, pointsOnLeft) = grid.findLoopAndPointsOnLeftOfLoop()
 
-        grid.floodFill(pointsOnLeft, loop)
+        pointsOnLeft.floodFill { neighbor -> neighbor !in loop && grid.inBounds(neighbor) }
 
         val leftIsInside = pointsOnLeft.none { grid.isOnBorder(it) }
         return if (leftIsInside)
