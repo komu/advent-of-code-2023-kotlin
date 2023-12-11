@@ -30,6 +30,9 @@ private val SPACE = Regex("\\s+")
 
 fun String.words(): List<String> = split(SPACE)
 
+fun <T> List<T>.choosePairs(): List<Pair<T, T>> =
+    withIndex().flatMap { (index, a) -> subList(index + 1, size).map { b -> a to b } }
+
 fun <T> assertEquals(a: T, b: T) {
     check(a == b) { "$a != $b" }
 }
