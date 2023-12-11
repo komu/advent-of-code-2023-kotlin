@@ -9,7 +9,7 @@ private class Universe(private val grid: List<String>) {
         }
     }
 
-    fun shortestPath(a: Point, b: Point, expansion: Long): Long {
+    fun distance(a: Point, b: Point, expansion: Long): Long {
         val empty = (a.x..b.x).normalize().intersect(emptyCols).size +
                 (a.y..b.y).normalize().intersect(emptyRows).size
 
@@ -22,7 +22,7 @@ fun main() {
         val universe = Universe(input)
 
         return universe.galaxies.choosePairs().sumOf { (a, b) ->
-            universe.shortestPath(a, b, expansion)
+            universe.distance(a, b, expansion)
         }
     }
 
