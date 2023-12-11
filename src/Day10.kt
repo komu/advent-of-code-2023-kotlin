@@ -1,8 +1,4 @@
 import CardinalDirection.*
-import Vector.Companion.DOWN
-import Vector.Companion.LEFT
-import Vector.Companion.RIGHT
-import Vector.Companion.UP
 
 private class PipeGrid(private val lines: List<String>) {
 
@@ -29,44 +25,54 @@ private class PipeGrid(private val lines: List<String>) {
         val loop = mutableSetOf<Point>()
         val left = mutableSetOf<Point>()
 
-        var p = start
-        var d = initialDirection
+        var position = start
+        var direction = initialDirection
 
-        while (loop.add(p)) {
-            val ch = get(p)
+        fun collectLeft(vararg ds: CardinalDirection) {
+            for (d in ds)
+                left.add(position + d)
+        }
+
+        fun move(newDirection: CardinalDirection) {
+            position += newDirection
+            direction = newDirection
+        }
+
+        while (loop.add(position)) {
+            val ch = get(position)
                 ?: return null
 
             // @formatter:off
             when (ch) {
-                'S' -> p += d
-                '|' -> when (d) {
-                    N -> { left.add(p + W); p += N }
-                    S -> { left.add(p + E); p += S }
+                'S' -> move(direction)
+                '|' -> when (direction) {
+                    N -> { collectLeft(W); move(N) }
+                    S -> { collectLeft(E); move(S) }
                     else -> return null
                 }
-                '-' -> when (d) {
-                    E -> { left.add(p + N); p += E }
-                    W -> { left.add(p + S); p += W }
+                '-' -> when (direction) {
+                    E -> { collectLeft(N); move(E) }
+                    W -> { collectLeft(S); move(W) }
                     else -> return null
                 }
-                'L' -> when (d) {
-                    S -> { p += E; d = E }
-                    W -> { left.add(p + S); left.add(p + W); p += N; d = N }
+                'L' -> when (direction) {
+                    S -> { move(E) }
+                    W -> { collectLeft(S, W); move(N) }
                     else -> return null
                 }
-                'J' -> when (d) {
-                    S -> { left.add(p + E); left.add(p + S); p += W; d = W }
-                    E -> { p += N; d = N }
+                'J' -> when (direction) {
+                    S -> { collectLeft(E, S); move(W) }
+                    E -> { move(N) }
                     else -> return null
                 }
-                '7' -> when (d) {
-                    N -> { p += W; d = W }
-                    E -> { left.add(p + N); left.add(p + E); p += S; d = S }
+                '7' -> when (direction) {
+                    N -> { move(W) }
+                    E -> { collectLeft(N, E); move(S) }
                     else -> return null
                 }
-                'F' -> when (d) {
-                    N -> { left.add(p + W); left.add(p + N); p += E; d = E }
-                    W -> { p += S; d = S }
+                'F' -> when (direction) {
+                    N -> { collectLeft(W, N); move(E) }
+                    W -> { move(S) }
                     else -> return null
                 }
                 '.' -> return null
