@@ -56,48 +56,5 @@ fun <T> Sequence<T>.repeated(): Sequence<T> = sequence {
 
 fun String.toIntList() = words().map { it.toInt() }
 
-data class Point(val x: Int, val y: Int) {
-
-    val up: Point
-        get() = towards(CardinalDirection.N)
-
-    val down: Point
-        get() = towards(CardinalDirection.S)
-
-    val left: Point
-        get() = towards(CardinalDirection.W)
-
-    val right: Point
-        get() = towards(CardinalDirection.E)
-
-    fun manhattanDistance(p: Point) =
-        abs(x - p.x) + abs(y - p.y)
-
-    fun towards(d: CardinalDirection): Point =
-        Point(x + d.dx, y + d.dy)
-
-    val neighbors: List<Point>
-        get() = buildList {
-            for (dy in listOf(-1, 0, 1))
-                for (dx in listOf(-1, 0, 1))
-                    if (dx != 0 || dy != 0)
-                        add(Point(x + dx, y + dy))
-        }
-
-    companion object {
-        fun inRange(xRange: IntRange, yRange: IntRange) =
-            yRange.flatMap { y -> xRange.map { x -> Point(x, y) } }
-    }
-}
-
 fun IntRange.normalize() =
     minOf(start, endInclusive)..maxOf(start, endInclusive)
-
-fun <T> Iterable<T>.intersectionSize(xs: Iterable<T>) = intersect(xs).size
-
-enum class CardinalDirection(val dy: Int, val dx: Int) {
-    N(-1, 0),
-    W(0, -1),
-    S(1, 0),
-    E(0, 1);
-}

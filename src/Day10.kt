@@ -1,4 +1,8 @@
 import CardinalDirection.*
+import Vector.Companion.DOWN
+import Vector.Companion.LEFT
+import Vector.Companion.RIGHT
+import Vector.Companion.UP
 
 private class PipeGrid(private val lines: List<String>) {
 
@@ -31,35 +35,35 @@ private class PipeGrid(private val lines: List<String>) {
 
             // @formatter:off
             when (ch) {
-                'S' -> p = p.towards(d)
+                'S' -> p += d
                 '|' -> when (d) {
-                    N -> { left += p.left; p = p.up }
-                    S -> { left += p.right; p = p.down }
+                    N -> { left.add(p + W); p += N }
+                    S -> { left.add(p + E); p += S }
                     else -> return null
                 }
                 '-' -> when (d) {
-                    E -> { left += p.up; p = p.right }
-                    W -> { left += p.down; p = p.left }
+                    E -> { left.add(p + N); p += E }
+                    W -> { left.add(p + S); p += W }
                     else -> return null
                 }
                 'L' -> when (d) {
-                    S -> { p = p.right; d = E }
-                    W -> { left += p.down; left += p.left; p = p.up; d = N }
+                    S -> { p += E; d = E }
+                    W -> { left.add(p + S); left.add(p + W); p += N; d = N }
                     else -> return null
                 }
                 'J' -> when (d) {
-                    S -> { left += p.right; left += p.down; p = p.left; d = W }
-                    E -> { p = p.up; d = N }
+                    S -> { left.add(p + E); left.add(p + S); p += W; d = W }
+                    E -> { p += N; d = N }
                     else -> return null
                 }
                 '7' -> when (d) {
-                    N -> { p = p.left; d = W }
-                    E -> { left += p.up; left += p.right; p = p.down; d = S }
+                    N -> { p += W; d = W }
+                    E -> { left.add(p + N); left.add(p + E); p += S; d = S }
                     else -> return null
                 }
                 'F' -> when (d) {
-                    N -> { left += p.left; left += p.up; p = p.right; d = E }
-                    W -> { p = p.down; d = S }
+                    N -> { left.add(p + W); left.add(p + N); p += E; d = E }
+                    W -> { p += S; d = S }
                     else -> return null
                 }
                 '.' -> return null
