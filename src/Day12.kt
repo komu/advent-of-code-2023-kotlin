@@ -12,29 +12,29 @@ private data class ConditionRecord(
         val cache = mutableMapOf<Pair<Int, Int>, Long>()
 
         fun recurse(group: Int, offset: Int): Long = cache.getOrPut(Pair(group, offset)) {
-            if (group == groupLengths.size) {
-                if (offset > pattern.lastIndex || '#' !in pattern.subSequence(offset, pattern.length)) 1 else 0
-            } else {
-                (offset..pattern.length).sumOf { i ->
-                    val segment = i..<(i + groupLengths[group])
+            when {
+                group < groupLengths.size -> {
+                    val length = groupLengths[group]
 
-                    if (isValidNextSegment(segment, previous = offset))
-                        recurse(group + 1, segment.last + 2)
-                    else
-                        0
+                    (offset..pattern.length - length).sumOf { i ->
+                        val segment = i..<(i + length)
+                        val gapBefore = pattern.subSequence(offset, segment.first)
+                        val charAfter = pattern.getOrNull(segment.last + 1)
+
+                        if ('#' !in gapBefore && charAfter != '#' && segment.all { pattern[it] != '.' })
+                            recurse(group + 1, segment.last + 2)
+                        else
+                            0
+                    }
                 }
+
+                '#' !in pattern.drop(offset) -> 1
+                else -> 0
             }
         }
 
         return recurse(0, 0)
     }
-
-    private fun isValidNextSegment(segment: IntRange, previous: Int) =
-        segment.first in pattern.indices &&
-                segment.last in pattern.indices &&
-                pattern.getOrNull(segment.last + 1) != '#' &&
-                '#' !in pattern.subSequence(previous..<segment.first) &&
-                segment.all { pattern[it] != '.' }
 
     companion object {
         fun parse(s: String): ConditionRecord {
