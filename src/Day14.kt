@@ -1,18 +1,21 @@
-private class Platform(grid: List<CharArray>) {
+private class Platform private constructor(private val buf: CharArray, private val width: Int) {
 
-    private val grid = grid.map { it.clone() }
-    private val width = grid[0].size
-    private val height = grid.size
+    private val height = buf.size / width
+
+    constructor(grid: List<String>) : this(
+        buf = grid.joinToString("").toCharArray(),
+        width = grid[0].length
+    )
 
     override fun equals(other: Any?): Boolean =
-        other is Platform && grid.zip(other.grid).all { (a, b) -> a.contentEquals(b) }
+        other is Platform && buf.contentEquals(other.buf) && width == other.width
 
-    override fun hashCode() = grid.foldRight(1) { a, b -> a.contentHashCode() * 79 + b }
+    override fun hashCode() = buf.contentHashCode()
 
-    operator fun get(p: Point) = grid[p.y][p.x]
+    operator fun get(p: Point) = buf[p.y * width + p.x]
 
     operator fun set(p: Point, c: Char) {
-        grid[p.y][p.x] = c
+        buf[p.y * width + p.x] = c
     }
 
     operator fun contains(p: Point) = p.y in 0..<height && p.x in 0..<width
@@ -46,7 +49,7 @@ private class Platform(grid: List<CharArray>) {
     }
 
     fun cycle(): Platform {
-        val copy = Platform(grid)
+        val copy = Platform(buf.clone(), width)
         copy.tilt(Vector.UP)
         copy.tilt(Vector.LEFT)
         copy.tilt(Vector.DOWN)
@@ -55,20 +58,23 @@ private class Platform(grid: List<CharArray>) {
     }
 
     fun load() =
-        grid.indices.sumOf { y ->
-            grid[y].count { it == 'O' } * (height - y)
+        (0..<height).sumOf { y ->
+            val count = (0..<width).count { x ->
+                buf[y * width + x] == 'O'
+            }
+            count * (height - y)
         }
 }
 
 fun main() {
     fun part1(input: List<String>): Int {
-        val platform = Platform(input.map { it.toCharArray() })
+        val platform = Platform(input)
         platform.tilt(Vector(dx = 0, dy = -1))
         return platform.load()
     }
 
     fun part2(input: List<String>): Int {
-        val platform = Platform(input.map { it.toCharArray() })
+        val platform = Platform(input)
 
         val seenIndices = mutableMapOf<Platform, Int>()
         val seen = mutableListOf<Platform>()
