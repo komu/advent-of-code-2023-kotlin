@@ -40,12 +40,11 @@ private class HeatMap(val grid: List<String>, straight: IntRange) {
 
 private data class SearchState(val point: Point, val direction: CardinalDirection, val straightMoves: Int)
 
-private fun solve(map: HeatMap): Int {
-    val start = SearchState(Point(0, 0), CardinalDirection.E, straightMoves = 1)
-
-    val (_, cost) = shortestPathWithCost(start, { map.isEnd(it) }) { map.transitions(it) } ?: error("no path")
-    return cost
-}
+private fun solve(map: HeatMap): Int =
+    CardinalDirection.entries.minOf { dir ->
+        val start = SearchState(Point(0, 0), dir, straightMoves = 1)
+        shortestPathWithCost(start, { map.isEnd(it) }) { map.transitions(it) }?.second ?: Int.MAX_VALUE
+    }
 
 fun main() {
     fun part1(input: List<String>) = solve(HeatMap(input, straight = 0..3))
