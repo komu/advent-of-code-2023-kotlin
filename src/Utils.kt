@@ -40,6 +40,10 @@ fun <T> assertEquals(a: T, b: T) {
     check(a == b) { "$a != $b" }
 }
 
+fun <T> assertEquals(a: T, b: T, details: String) {
+    check(a == b) { "$details: $a != $b" }
+}
+
 fun gcd(a: Long, b: Long): Long =
     if (b == 0L) a else gcd(b, a % b)
 

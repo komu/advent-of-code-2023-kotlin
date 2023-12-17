@@ -50,4 +50,20 @@ operator fun Int.times(v: Vector) = v * this
 
 enum class CardinalDirection(val vector: Vector) {
     N(UP), W(LEFT), S(DOWN), E(RIGHT);
+
+    fun left() = when (this) {
+        N -> W
+        W -> S
+        S -> E
+        E -> N
+    }
+
+    fun right() = when (this) {
+        N -> E
+        W -> N
+        S -> W
+        E -> S
+    }
+
+
 }
