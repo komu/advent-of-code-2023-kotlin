@@ -3,6 +3,7 @@ import Vector.Companion.LEFT
 import Vector.Companion.RIGHT
 import Vector.Companion.UP
 import kotlin.math.abs
+import kotlin.math.sign
 
 data class Point(val x: Int, val y: Int) {
 
@@ -11,6 +12,9 @@ data class Point(val x: Int, val y: Int) {
 
     operator fun plus(d: CardinalDirection) =
         this + d.vector
+
+    operator fun minus(v: Point) =
+        Vector(x - v.x, y - v.y)
 
     operator fun minus(v: Vector) =
         Point(x - v.dx, y - v.dy)
@@ -27,12 +31,13 @@ data class Point(val x: Int, val y: Int) {
         }
 
     companion object {
+        val ORIGIN = Point(0, 0)
         fun inRange(xRange: IntRange, yRange: IntRange) =
             yRange.flatMap { y -> xRange.map { x -> Point(x, y) } }
     }
 }
 
-data class Vector(val dx: Int, val dy: Int) {
+data class Vector(val dx: Int = 0, val dy: Int = 0) {
 
     operator fun times(s: Int) = Vector(s * dx, s * dy)
     operator fun plus(v: Vector) = Vector(dx + v.dx, dy + v.dy)
@@ -65,5 +70,22 @@ enum class CardinalDirection(val vector: Vector) {
         E -> S
     }
 
+    companion object {
+        fun between(a: Point, b: Point): CardinalDirection {
+            val dx = (b.x - a.x).sign
+            val dy = (b.y - a.y).sign
 
+            require(dx == 0 || dy == 0)
+
+            return when {
+                dx == 1 -> E
+                dx == -1 -> W
+                dy == -1 -> N
+                dy == 1 -> S
+                else -> error("no cardinal direction between $a and $b")
+            }
+        }
+    }
 }
+
+operator fun Int.times(d: CardinalDirection) = this * d.vector

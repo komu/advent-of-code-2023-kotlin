@@ -3,6 +3,7 @@ import java.security.MessageDigest
 import kotlin.io.path.Path
 import kotlin.io.path.readLines
 import kotlin.io.path.readText
+import kotlin.time.measureTime
 
 /**
  * Reads lines from the given input txt file.
@@ -63,3 +64,22 @@ fun String.toIntList() = words().map { it.toInt() }
 
 fun IntRange.normalize() =
     minOf(start, endInclusive)..maxOf(start, endInclusive)
+
+@Suppress("unused")
+inline fun <T> measureAvgTime(repeats: Int = 100, block: () -> T): T {
+    var result: T? = null
+
+    val time = measureTime {
+        repeat(repeats) {
+            result = block()
+        }
+    }
+
+    println(time / repeats)
+
+    @Suppress("UNCHECKED_CAST")
+    return result as T
+}
+
+fun <T> List<T>.withCyclicNeighbors(): List<Triple<T, T, T>> =
+    indices.map { Triple(getOrNull(it - 1) ?: last(), this[it], getOrNull(it + 1) ?: first()) }
