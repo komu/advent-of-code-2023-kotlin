@@ -80,6 +80,3 @@ inline fun <T> measureAvgTime(repeats: Int = 100, block: () -> T): T {
     @Suppress("UNCHECKED_CAST")
     return result as T
 }
-
-fun <T> List<T>.withCyclicNeighbors(): List<Triple<T, T, T>> =
-    indices.map { Triple(getOrNull(it - 1) ?: last(), this[it], getOrNull(it + 1) ?: first()) }

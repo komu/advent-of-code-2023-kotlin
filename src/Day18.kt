@@ -1,5 +1,4 @@
 import CardinalDirection.*
-import Point.Companion.ORIGIN
 import kotlin.math.absoluteValue
 
 private class DigInstruction(val dir: CardinalDirection, val meters: Int) {
@@ -21,52 +20,6 @@ private class DigInstruction(val dir: CardinalDirection, val meters: Int) {
     }
 }
 
-private fun collectLeftAndRightCorners(vertices: List<Point>): Pair<List<Point>, List<Point>> {
-    val left = mutableListOf<Point>()
-    val right = mutableListOf<Point>()
-
-    val bottomLeftTopRight = Pair(Vector(0, 1), Vector(1, 0))
-    val topLeftBottomRight = Pair(Vector(0, 0), Vector(1, 1))
-    val topRightBottomLeft = Pair(Vector(1, 0), Vector(0, 1))
-    val bottomRightTopLeft = Pair(Vector(1, 1), Vector(0, 0))
-
-    for ((previous, current, next) in vertices.withCyclicNeighbors()) {
-        val arrivalDirection = CardinalDirection.between(previous, current)
-        val leaveDirection = CardinalDirection.between(current, next)
-
-        val (lhs, rhs) = when (arrivalDirection) {
-            N -> when (leaveDirection) {
-                W -> bottomLeftTopRight
-                E -> topLeftBottomRight
-                else -> error("unexpected")
-            }
-
-            S -> when (leaveDirection) {
-                E -> topRightBottomLeft
-                W -> bottomRightTopLeft
-                else -> error("unexpected")
-            }
-
-            W -> when (leaveDirection) {
-                S -> bottomRightTopLeft
-                N -> bottomLeftTopRight
-                else -> error("unexpected")
-            }
-
-            E -> when (leaveDirection) {
-                N -> topLeftBottomRight
-                S -> topRightBottomLeft
-                else -> error("unexpected")
-            }
-        }
-
-        left.add(current + lhs)
-        right.add(current + rhs)
-    }
-
-    return Pair(left, right)
-}
-
 private fun shoelace(ps: List<Point>): Long =
     ps.indices.sumOf { i ->
         val p1 = ps[i]
@@ -78,10 +31,10 @@ private fun shoelace(ps: List<Point>): Long =
 fun main() {
 
     fun solve(instructions: List<DigInstruction>): Long {
-        val vertices = instructions.scan(ORIGIN) { p, i -> p + i.meters * i.dir }.drop(1)
-        val (left, right) = collectLeftAndRightCorners(vertices)
+        val vertices = instructions.scan(Point(0, 0)) { p, i -> p + i.meters * i.dir }.drop(1)
+        val circumference = instructions.sumOf { it.meters.toLong() }
 
-        return maxOf(shoelace(left), shoelace(right))
+        return shoelace(vertices) + circumference / 2 + 1
     }
 
     fun part1(input: List<String>) = solve(input.map { DigInstruction.parse1(it) })
