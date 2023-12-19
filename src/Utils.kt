@@ -35,7 +35,7 @@ inline fun <T> Iterable<T>.productOf(block: (T) -> Int): Int =
     fold(1) { a, b -> a * block(b) }
 
 @OverloadResolutionByLambdaReturnType
-inline fun <T> Iterable<T>.productOf(block: (T) -> Long): Long  =
+inline fun <T> Iterable<T>.productOf(block: (T) -> Long): Long =
     fold(1) { a, b -> a * block(b) }
 
 private val SPACE = Regex("\\s+")
@@ -82,11 +82,11 @@ fun <K, V> Map<K, V>.withReplacedKey(k: K, v: V): Map<K, V> {
 val IntRange.length: Int
     get() = endInclusive - start + 1
 
-fun parseIntMap(s: String): Map<String, Int> =
-    s.substring(1, s.length - 1).split(",").associate {
-        val (k, v) = it.split("=")
-        k to v.toInt()
-    }
+fun String.splitOnce(separator: String): Pair<String, String> {
+    val split = split(separator, limit = 2)
+    require(split.size == 2)
+    return Pair(split[0], split[1])
+}
 
 @Suppress("unused")
 inline fun <T> measureAvgTime(repeats: Int = 100, block: () -> T): T {

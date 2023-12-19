@@ -6,12 +6,12 @@ private sealed class Rule(val target: String) {
     abstract fun evaluate(part: Part): Boolean
     abstract fun split(candidate: Candidate): Pair<Candidate, Candidate?>
 
-    private class Transition(target: String) : Rule(target) {
+    class Transition(target: String) : Rule(target) {
         override fun evaluate(part: Part) = true
         override fun split(candidate: Candidate) = candidate to null
     }
 
-    private class Lt(val key: String, val value: Int, target: String) : Rule(target) {
+    class Lt(val key: String, val value: Int, target: String) : Rule(target) {
 
         override fun evaluate(part: Part) = part[key]!! < value
 
@@ -25,7 +25,7 @@ private sealed class Rule(val target: String) {
         }
     }
 
-    private class Gt(val key: String, val value: Int, target: String) : Rule(target) {
+    class Gt(val key: String, val value: Int, target: String) : Rule(target) {
         override fun evaluate(part: Part) = part[key]!! > value
 
         override fun split(candidate: Candidate): Pair<Candidate, Candidate> {
@@ -37,33 +37,36 @@ private sealed class Rule(val target: String) {
             )
         }
     }
-
-    companion object {
-        private val RULE_PATTERN = Regex("""(.+)([<>])(\d+):(.+)""")
-
-        fun parse(s: String): Rule =
-            RULE_PATTERN.matchEntire(s)?.destructured?.let { (key, op, value, target) ->
-                when (op) {
-                    "<" -> Lt(key, value.toInt(), target)
-                    ">" -> Gt(key, value.toInt(), target)
-                    else -> error("invalid op $op")
-                }
-
-            } ?: Transition(s)
-    }
 }
 
+
 private fun parseInput(input: String): Pair<Map<String, List<Rule>>, List<Map<String, Int>>> {
-    val workflowRegex = Regex("""(.+)\{(.+)}""")
+    val workflowPattern = Regex("""(.+)\{(.+)}""")
+    val rulePattern = Regex("""(.+)([<>])(\d+):(.+)""")
+
+    fun parseRule(s: String): Rule =
+        rulePattern.matchEntire(s)?.destructured?.let { (key, op, value, target) ->
+            when (op) {
+                "<" -> Rule.Lt(key, value.toInt(), target)
+                ">" -> Rule.Gt(key, value.toInt(), target)
+                else -> error("invalid op $op")
+            }
+
+        } ?: Rule.Transition(s)
 
     val (workflows, parts) = input.split("\n\n")
     return Pair(
-        workflows.lines().associate { s ->
-            val (name, rules) = workflowRegex.matchEntire(s)!!.destructured
-            name to rules.split(",").map { Rule.parse(it) }
-        },
+        workflows.lines()
+            .map { workflowPattern.matchEntire(it)!!.destructured }
+            .associate { (n, rules) -> n to (rules.split(",").map(::parseRule)) },
 
-        parts.lines().map { parseIntMap(it) }
+        parts.lines()
+            .map { line ->
+                line.trim('{', '}')
+                    .split(",")
+                    .associate { it.splitOnce("=") }
+                    .mapValues { (_, v) -> v.toInt() }
+            }
     )
 }
 
