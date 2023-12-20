@@ -59,8 +59,8 @@ fun gcd(a: Long, b: Long): Long =
 fun lcm(a: Long, b: Long): Long =
     a / gcd(a, b) * b
 
-fun lcd(numbers: List<Long>): Long =
-    numbers.fold(1L) { lcm, number -> lcm(lcm, number) }
+fun lcd(xs: List<Long>): Long =
+    xs.fold(1, ::lcm)
 
 fun <T> Sequence<T>.repeated(): Sequence<T> = sequence {
     while (true) {
