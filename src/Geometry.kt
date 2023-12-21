@@ -30,6 +30,9 @@ data class Point(val x: Int, val y: Int) {
                         add(Point(x + dx, y + dy))
         }
 
+    val cardinalNeighbors: List<Point>
+        get() = CardinalDirection.entries.map { this + it }
+
     companion object {
         val ORIGIN = Point(0, 0)
         fun inRange(xRange: IntRange, yRange: IntRange) =
@@ -71,7 +74,7 @@ enum class CardinalDirection(val vector: Vector) {
     }
 
     companion object {
-        fun between(a: Point, b: Point): CardinalDirection {
+        fun between(a: Point, b: Point): CardinalDirection? {
             val dx = (b.x - a.x).sign
             val dy = (b.y - a.y).sign
 
@@ -82,7 +85,7 @@ enum class CardinalDirection(val vector: Vector) {
                 dx == -1 -> W
                 dy == -1 -> N
                 dy == 1 -> S
-                else -> error("no cardinal direction between $a and $b")
+                else -> null
             }
         }
     }

@@ -89,7 +89,7 @@ fun String.splitOnce(separator: String): Pair<String, String> {
 }
 
 @Suppress("unused")
-inline fun <T> measureAvgTime(repeats: Int = 100, block: () -> T): T {
+inline fun <T> measureAvgTime(repeats: Int = 100, label: String = "", block: () -> T): T {
     var result: T? = null
 
     val time = measureTime {
@@ -98,10 +98,17 @@ inline fun <T> measureAvgTime(repeats: Int = 100, block: () -> T): T {
         }
     }
 
-    println(time / repeats)
+    val avg = time / repeats
+    if (label.isNotEmpty())
+        println("$label: $avg")
+    else
+        println(avg)
 
     @Suppress("UNCHECKED_CAST")
     return result as T
 }
+
+inline fun <T> printElapsedTime(label: String = "", block: () -> T): T =
+    measureAvgTime(repeats = 1, label = label, block = block)
 
 operator fun <T> List<T>.component6() = this[5]
