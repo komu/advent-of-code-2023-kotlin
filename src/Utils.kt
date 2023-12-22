@@ -103,3 +103,5 @@ inline fun <T> measureAvgTime(repeats: Int = 100, block: () -> T): T {
     @Suppress("UNCHECKED_CAST")
     return result as T
 }
+
+operator fun <T> List<T>.component6() = this[5]
